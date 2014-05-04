@@ -1,0 +1,20 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th
+        moves
+      %th.warning
+        You
+      %th
+        Other
+      %th
+        result
+  %tbody
+  -game_result = game.result
+  -game_result[0].each_with_index do |row, idx|
+    %tr
+      %td=idx
+      %td.warning=Game::WEAPONS[row[0]]
+      %td=Game::WEAPONS[row[1]]
+      %td{:class => Game::MOVE_RESULTS_CLASSES[row[2]]}=Game::MOVE_RESULTS_LABELS[row[2]]
+  %tr=summary([game_result[1], game_result[2]])

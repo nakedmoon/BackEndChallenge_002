@@ -1,0 +1,58 @@
+- fight_button_id = "game_#{@game.id}_fight"
+- select_move_options = {:enabled => {:class => 'form-control'}, :disabled => {:class => 'form-control', :disabled => true}}
+- fight_button_class = {:enabled => 'btn btn-success', :disabled => 'btn btn-danger disabled'}
+- message_class = {:enabled => 'alert fade in alert-info', :disabled => 'alert fade in alert-warning'}
+- message_text = {:enabled => 'Ready to fight!', :disabled => 'Waiting for an adversary.....'}
+- form_status = @game.ready_to_fight? ? :enabled : :disabled
+= form_for @game, :url => fight_game_path(@game), :html => { :class => 'form-horizontal' } do |f|
+  %div#message{:class => message_class[form_status]}
+    =message_text[form_status]
+  .form-group
+    = f.label :uid, :class => 'col-sm-2 control-label'
+    .col-sm-6
+      %p.form-control-static=@game.uid
+  = f.fields_for :moves  do |o|
+    - Player::MOVES_ATTRIBUTES.each do |move|
+      .form-group
+        = f.label move, :class => "col-sm-2 control-label"
+        .col-sm-6
+          =o.select move, options_for_select(Game::WEAPONS.map.with_index{|idx,label| [idx, label]}), {}, select_move_options[form_status]
+  .form-group
+    .col-sm-offset-2.col-sm-6
+      = f.submit 'Fight', :class => fight_button_class[form_status], :id => fight_button_id
+      = link_to t('.cancel', :default => t("helpers.links.cancel")), games_path, :class => 'btn btn-default'
+
+
+
+:coffee
+  enable_form = () ->
+    $('##{fight_button_id}').attr('class', '#{fight_button_class[:enabled]}')
+    $('.form-control').prop('disabled', false)
+    $('#message').html('#{message_text[:enabled]}')
+    $('#message').attr('class', '#{message_class[:enabled]}')
+  disable_form = () ->
+    $('##{fight_button_id}').attr('class', '#{fight_button_class[:disabled]}')
+    $('.form-control').prop('disabled', 'disabled')
+    $('#message').html('#{message_text[:disabled]}')
+    $('#message').attr('class', '#{message_class[:disabled]}')
+  $ ->
+    game_ready_to_fight = #{@game.ready_to_fight?}
+    if game_ready_to_fight == false
+      console.log('game_ready_to_fight');
+      console.log(game_ready_to_fight);
+      source = new EventSource('#{game_ready_to_fight_path(@game)}')
+      source.addEventListener 'update', (e) ->
+        console.log(e.data)
+        if e.data == 'true'
+          enable_form()
+        else if e.data == 'false'
+          disable_form()
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,4 @@
+- model_class = Game
+.page-header
+  %h1=t '.title', :default => [:'helpers.titles.play', 'Play %{model}'], :model => model_class.model_name.human.titleize
+= render :partial => "form_play"

@@ -1,0 +1,35 @@
+- model_class = Game
+- game_status = @game.finished? ? :finished : :waiting
+- message_class = {:finished => 'alert fade in alert-info', :waiting => 'alert fade in alert-warning'}
+- message_text = {:finished => 'Finished!', :waiting => 'Waiting for finish.....'}
+
+.page-header
+  %h1=t '.title', :default => model_class.model_name.human.titleize
+
+%p
+  %strong= model_class.human_attribute_name(:uid) + ':'
+  %br
+  = @game.uid
+
+%div#message{:class => message_class[game_status]}
+  =message_text[game_status]
+
+#game_result
+  =render :partial => 'result', :locals => {game: @game} if @game.finished?
+
+
+= link_to t('.back', :default => t("helpers.links.back")), games_path, :class => 'btn btn-default'
+
+
+
+:coffee
+  $ ->
+    game_finished = #{@game.finished?}
+    if game_finished == false
+      source = new EventSource('#{game_finished_path(@game)}')
+      source.addEventListener 'update', (e) ->
+        $('#message').html('#{message_text[:finished]}')
+        $('#message').attr('class', '#{message_class[:finished]}')
+        $('#game_result').load('#{game_result_path(@game)}')
+
+
