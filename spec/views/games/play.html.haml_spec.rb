@@ -17,7 +17,7 @@ describe "games/play" do
     visit generate_game_path
     expect(page.find_by_id('message')).to have_content('Waiting for an adversary.....')
     expect(find_button('Fight')[:class].include?('btn btn-danger disabled')).to be_true
-    Player::MOVES_ATTRIBUTES.each do |move|
+    Game::MOVES_ATTRIBUTES.each do |move|
       select = page.find_by_id("game_moves_#{move}")
       expect(select.disabled?).to eq('disabled')
     end
@@ -32,7 +32,7 @@ describe "games/play" do
     expect(message[:class].include?('alert fade in alert-warning')).to be_true
     expect(message).to have_content('Waiting for an adversary.....')
     expect(find_button('Fight')[:class].include?('btn btn-danger disabled')).to be_true
-    Player::MOVES_ATTRIBUTES.each do |move|
+    Game::MOVES_ATTRIBUTES.each do |move|
       select = page.find_by_id("game_moves_#{move}")
       expect(select.disabled?).to eq('disabled')
     end
@@ -47,7 +47,7 @@ describe "games/play" do
     expect(message).to have_content('Ready to fight!')
     expect(message[:class].include?('alert fade in alert-info')).to be_true
     expect(find_button('Fight')[:class].include?('btn btn-success')).to be_true
-    Player::MOVES_ATTRIBUTES.each do |move|
+    Game::MOVES_ATTRIBUTES.each do |move|
       select = page.find_by_id("game_moves_#{move}")
       expect(select.disabled?).to eq(nil)
     end
@@ -69,7 +69,7 @@ describe "games/play" do
     expect(message[:class].include?('alert fade in alert-info')).to be_true
     fight_button = find_button('Fight')
     expect(fight_button[:class].include?('btn btn-success')).to be_true
-    Player::MOVES_ATTRIBUTES.each do |move|
+    Game::MOVES_ATTRIBUTES.each do |move|
       select = page.find_by_id("game_moves_#{move}")
       expect(select.disabled?).to eq(nil)
     end
